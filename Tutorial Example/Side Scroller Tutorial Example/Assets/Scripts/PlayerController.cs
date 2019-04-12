@@ -179,8 +179,8 @@ public class PlayerController : MonoBehaviour
         for(int i = 0; i < hit.Length; i++)
         {
             EnemyController script = hit[i].GetComponent<EnemyController>();
-            script.Damage(slashAttackDamage);
-            script.KnockBack(slashAttackKnockBack, facingDirection);
+            script.Damage(slashAttackDamage, slashAttackKnockBack, facingDirection);
+            //script.KnockBack(slashAttackKnockBack, facingDirection);
         }
 
 

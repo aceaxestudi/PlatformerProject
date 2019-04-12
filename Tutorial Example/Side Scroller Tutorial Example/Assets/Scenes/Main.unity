@@ -78189,7 +78189,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 415327144}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.55, y: 4.04, z: 0}
+  m_LocalPosition: {x: -1.77, y: 4.04, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -78226,6 +78226,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a202e6e6e1e40854485a190959291781, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movementSpeed: 5
+  xDistanceRight: 5
+  xDistanceLeft: 4
+  timeTillCanMove: 0.5
   knockbackDirection: {x: 1, y: 1}
   health: 100
 --- !u!70 &415327151
