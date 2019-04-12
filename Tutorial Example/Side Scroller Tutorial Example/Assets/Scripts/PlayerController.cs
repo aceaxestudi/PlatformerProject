@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private bool canJump = true; // 6. Wether or not the character can currently jump
     private bool isTouchingWall; // 9. Wether or not the character is currently touching a wall
     private bool isWallSliding; // 10. Wether or not the character is currently wallSliding
+    private bool isAttacking;
 
     private Rigidbody2D rb; // 1. Holds reference to the Rigidbody attached to the character. Used to move the character.
     private Animator anim; // 4. Holds refernece to Animator component so we can change the animations
@@ -32,13 +33,21 @@ public class PlayerController : MonoBehaviour
     public float wallJumpForce; // 14.
     public float wallHopForce; // 14.
 
+
+    //Slash Attack
+    public float slashAttackRadius = 1.0f;
+    public float slashAttackDamage = 25.0f;
+    public float slashAttackKnockBack = 10.0f;
+
     public Vector2 wallJumpDirection; // 14. How the force is split up when wall jumping
     public Vector2 wallHopDirection; // 14. How the force is split up when hopping off wall
 
     public LayerMask whatIsGround; // 5. A layer mask that specifies what is ground
+    public LayerMask whatIsDamageable;
 
     public Transform groundCheckTransform; // 5. Holds the transform of the position where we will be checking for ground
     public Transform wallCheckTransform; // 9. Hold transform of position where we will check for wall
+    public Transform slashAttackCheckTransform;
 
     void Start()
     {
@@ -80,6 +89,12 @@ public class PlayerController : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * variableJumpHightMultiplier);
             }
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            isAttacking = true;
+        }
+
     }
 
     private void CheckWallSliding() // 10. Check if the character should be wall sliding
@@ -110,6 +125,11 @@ public class PlayerController : MonoBehaviour
             canJump = true;
         }
        
+    }
+
+    void ChangeAttackState()
+    {
+        isAttacking = false;
     }
 
     private void CheckSurroundings() // 5. Checks for ground (and eventually walls)
@@ -152,6 +172,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void SlashAttack()
+    {
+        Collider2D[] hit = Physics2D.OverlapCircleAll(slashAttackCheckTransform.position, slashAttackRadius, whatIsDamageable);
+
+        for(int i = 0; i < hit.Length; i++)
+        {
+            EnemyController script = hit[i].GetComponent<EnemyController>();
+            script.Damage(slashAttackDamage);
+            script.KnockBack(slashAttackKnockBack, facingDirection);
+        }
+
+
+    }
+
     private void CheckMovementDirection() // 2.
     {
         if (isFacingRight && movementInputDirection < -0.1f) // 2. If character is facing right but trying to move left, flip
@@ -179,6 +213,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("isGrounded", isGrounded); // 8. Updates is grounded parameter
         anim.SetFloat("yVelocity", rb.velocity.y); // 8. Updates Y velocity in animator
         anim.SetBool("isWallSliding", isWallSliding); // 11. Update isWallSliding parameter
+        anim.SetBool("isAttacking", isAttacking);
     }
 
     private void Flip() // 2. Function used to flip the direction the character sprite is facing
@@ -217,6 +252,7 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos() // 5. Makes it so we can see our checks in the scene view
     {
         Gizmos.DrawWireSphere(groundCheckTransform.position, groundCheckRadius); // 5. Shows the ground check circle
+        Gizmos.DrawWireSphere(slashAttackCheckTransform.position, slashAttackRadius); 
         Gizmos.DrawLine(wallCheckTransform.position, new Vector3(wallCheckTransform.position.x + wallCheckDistance, wallCheckTransform.position.y, wallCheckTransform.position.z)); // 9. Shows wall check in scene view
     }
 }
