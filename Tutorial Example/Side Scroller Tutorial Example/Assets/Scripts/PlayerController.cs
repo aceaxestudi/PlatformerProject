@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
     public float wallJumpForce; // 14.
     public float wallHopForce; // 14.
 
+    public float jumpTimer;
+
 
     //Slash Attack
     public float slashAttackRadius = 1.0f;
@@ -79,8 +81,16 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump")) // 3. Checks if player is attempting to jump
         {
+            jumpTimer = 0.15f;        
+        }
+
+        if(jumpTimer > 0)
+        {
             Jump();
         }
+        
+        jumpTimer -= Time.deltaTime;
+        
 
         if (Input.GetButtonUp("Jump")) // 13. Cut y vel when jump button is released
         {
@@ -230,22 +240,28 @@ public class PlayerController : MonoBehaviour
     {
         if (canJump && !isWallSliding) // 6. Only jump if you can, 14. Add !isWallSliding
         {
+            isGrounded = false;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce); // 3. Set's upwards velocity when jumping
             amountOfJumpsLeft--; // 7. One less jump left
+            jumpTimer = 0;
         }
         else if (isWallSliding && movementInputDirection == 0 && canJump) // 14. Hop off wall
         {
+            isGrounded = false;
             isWallSliding = false;
             amountOfJumpsLeft--;
             Vector2 forceToAdd = new Vector2(wallHopForce * wallHopDirection.x * -facingDirection, wallHopForce * wallHopDirection.y);
             rb.AddForce(forceToAdd, ForceMode2D.Impulse);
+            jumpTimer = 0;
         }
         else if ((isWallSliding || isTouchingWall) && movementInputDirection != 0 && canJump && movementInputDirection != facingDirection)
         {
+            isGrounded = false;
             isWallSliding = false;
             amountOfJumpsLeft--;
             Vector2 forceToAdd = new Vector2(wallJumpForce * wallJumpDirection.x * movementInputDirection, wallJumpForce * wallJumpDirection.y);
             rb.AddForce(forceToAdd, ForceMode2D.Impulse);
+            jumpTimer = 0;
         }
     }
 
