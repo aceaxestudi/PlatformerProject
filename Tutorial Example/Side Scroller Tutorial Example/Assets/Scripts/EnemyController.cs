@@ -36,7 +36,7 @@ public class EnemyController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        knockbackDirection.Normalize();
+       // knockbackDirection.Normalize();
         waypointLeft = new Vector3(transform.position.x - xDistanceLeft, transform.position.y, transform.position.z);
         waypointRight = new Vector3(transform.position.x + xDistanceRight, transform.position.y, transform.position.z);
         startPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -95,11 +95,11 @@ public class EnemyController : MonoBehaviour
 
     public void Damage(float amount, float knockbackStrength, int leftOrRight)
     {
+        timeLeft = timeTillCanMove;
         health -= amount;
         Debug.Log("OUCH!");
         anim.SetTrigger("damage");
         canMove = false;
-        timeLeft = timeTillCanMove;
         KnockBack(knockbackStrength, leftOrRight);
 
         if (health <= 0)

@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
 
     private float movementInputDirection; // 1. Float to hold the direction the play wishes to move.
 
+    private float slashAttackTimer;
+    private float slashAttachTimeStart = 0.1f;
+
     private bool isFacingRight = true; // 2. Holds wether or not the character is facing right
     private bool isWalking = false; // 4. Wether or not the character actually move when attempting to walk
     private bool isGrounded; // 5. Wether or not the character is currently touching ground
@@ -16,6 +19,9 @@ public class PlayerController : MonoBehaviour
     private bool isTouchingWall; // 9. Wether or not the character is currently touching a wall
     private bool isWallSliding; // 10. Wether or not the character is currently wallSliding
     private bool isAttacking;
+    private bool canAttack = true;
+    private bool slashAttack;
+    private bool canFlip = true;
 
     private Rigidbody2D rb; // 1. Holds reference to the Rigidbody attached to the character. Used to move the character.
     private Animator anim; // 4. Holds refernece to Animator component so we can change the animations
@@ -67,6 +73,28 @@ public class PlayerController : MonoBehaviour
         UpdateAnimations(); // 4. Used to update all animations based on character condition
         CheckIfCanJump(); // 6. Check if the player can currently jump or not
         CheckWallSliding(); // 10. Function that determines if the character is currently wall sliding or not
+        CheckAttack();
+    }
+
+    private void CheckAttack()
+    {
+
+        //Slash attack
+        if (slashAttack && canAttack)
+        {
+
+            if(slashAttackTimer <= 0)
+            {
+                SlashAttack();
+            }
+            else
+            {
+                slashAttackTimer -= Time.deltaTime;
+            }
+
+        }
+
+
     }
 
     private void FixedUpdate() // 1.
@@ -103,6 +131,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             isAttacking = true;
+            slashAttackTimer = slashAttachTimeStart;
+            slashAttack = true;
         }
 
     }
@@ -140,6 +170,9 @@ public class PlayerController : MonoBehaviour
     void ChangeAttackState()
     {
         isAttacking = false;
+        canAttack = true;
+        canFlip = true;
+        Debug.Log("Setting canFlip to true;");
     }
 
     private void CheckSurroundings() // 5. Checks for ground (and eventually walls)
@@ -184,16 +217,24 @@ public class PlayerController : MonoBehaviour
 
     private void SlashAttack()
     {
-        Collider2D[] hit = Physics2D.OverlapCircleAll(slashAttackCheckTransform.position, slashAttackRadius, whatIsDamageable);
+       
+        slashAttack = false;
+            canAttack = false;
 
-        for(int i = 0; i < hit.Length; i++)
-        {
-            EnemyController script = hit[i].GetComponent<EnemyController>();
-            script.Damage(slashAttackDamage, slashAttackKnockBack, facingDirection);
-            //script.KnockBack(slashAttackKnockBack, facingDirection);
-        }
+            Collider2D[] hit = Physics2D.OverlapCircleAll(slashAttackCheckTransform.position, slashAttackRadius, whatIsDamageable);
 
+            for (int i = 0; i < hit.Length; i++)
+            {
+                EnemyController script = hit[i].GetComponent<EnemyController>();
+                script.Damage(slashAttackDamage, slashAttackKnockBack, facingDirection);
+            }
 
+    }
+
+    private void ToggleFlip()
+    {
+        canFlip = false;
+        Debug.Log("Setting canFlip to false;");
     }
 
     private void CheckMovementDirection() // 2.
@@ -228,7 +269,7 @@ public class PlayerController : MonoBehaviour
 
     private void Flip() // 2. Function used to flip the direction the character sprite is facing
     {
-        if (!isWallSliding) // 10. Only flip if not wall sliding
+        if (!isWallSliding && canFlip) // 10. Only flip if not wall sliding
         {
             isFacingRight = !isFacingRight;
             transform.Rotate(0.0f, 180.0f, 0.0f);

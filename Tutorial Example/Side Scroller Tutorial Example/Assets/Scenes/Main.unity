@@ -87479,7 +87479,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 666768418}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.94, y: -0.288, z: 0}
+  m_LocalPosition: {x: 1.69, y: -0.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1823841032}
@@ -88125,7 +88125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   amountOfJumps: 1
-  movementSpeed: 10
+  movementSpeed: 6
   jumpForce: 20
   groundCheckRadius: 0.26
   wallCheckDistance: 0.2
@@ -88350,6 +88350,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3486354902346333536, guid: d8e8d2c2d8444684fbecfb28d9de57b0,
+        type: 3}
+      propertyPath: knockbackDirection.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3486354902346333536, guid: d8e8d2c2d8444684fbecfb28d9de57b0,
+        type: 3}
+      propertyPath: knockbackDirection.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d8e8d2c2d8444684fbecfb28d9de57b0, type: 3}
